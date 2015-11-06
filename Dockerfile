@@ -6,12 +6,12 @@ ENV TCNATIVE_VERSION 1.2.0
 
 RUN apt-get update && apt-get install -yq gcc make libssl-dev libpcre++-dev zlib1g-dev \
 
- && (curl -L http://mirrors.ibiblio.org/apache/apr/apr-$APR_VERSION.tar.gz | gunzip -c | tar x) \
+ && (curl -L http://www.us.apache.org/dist/apr/apr-$APR_VERSION.tar.gz | gunzip -c | tar x) \
  && cd apr-$APR_VERSION \
  && ./configure \
  && make install \
 
- && (curl -L http://mirrors.ibiblio.org/apache/tomcat/tomcat-connectors/native/$TCNATIVE_VERSION/source/tomcat-native-$TCNATIVE_VERSION-src.tar.gz | gunzip -c | tar x) \
+ && (curl -L http://www.us.apache.org/dist/tomcat/tomcat-connectors/native/$TCNATIVE_VERSION/source/tomcat-native-$TCNATIVE_VERSION-src.tar.gz | gunzip -c | tar x) \
  && cd tomcat-native-$TCNATIVE_VERSION-src/jni/native \
  && ./configure --with-java-home=/jdk --with-apr=/usr/local/apr --prefix=/usr \
  && make install \
@@ -23,12 +23,18 @@ RUN apt-get update && apt-get install -yq gcc make libssl-dev libpcre++-dev zlib
 # ---------------------------------------------------------------------- tomcat8
 ENV TOMCAT_VERSION 8.0.28
 
-RUN (curl -L http://mirrors.ibiblio.org/apache/tomcat/tomcat-8/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz | gunzip -c | tar x) \
+RUN (curl -L http://www.us.apache.org/dist/tomcat/tomcat-8/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz | gunzip -c | tar x) \
  && mv apache-tomcat-$TOMCAT_VERSION /apache-tomcat \
- && rm -fR /apache-tomcat/webapps/* \
+ && rm -fR /apache-tomcat/webapps/*
 
- && sed -i 's/<\/Host>/<Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="X-Forwarded-For" protocolHeader="X-Forwarded-Proto"\/><\/Host>/' /apache-tomcat/conf/server.xml
+RUN cd /apache-tomcat/conf \
+ && echo '\njava.awt.headless=true' >> catalina.properties
 
+RUN cd /apache-tomcat/lib \
+ && curl -LO https://jcenter.bintray.com/org/apache/openejb/tomee-loader/1.7.2/tomee-loader-1.7.2.jar \
+ && curl -LO https://jcenter.bintray.com/org/glassfish/main/external/jmxremote_optional-repackaged/4.1/jmxremote_optional-repackaged-4.1.jar
+
+ADD server.xml /apache-tomcat/conf/
 ADD context.xml /apache-tomcat/conf/
 
 EXPOSE 8080
