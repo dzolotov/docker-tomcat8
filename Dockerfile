@@ -1,8 +1,8 @@
-FROM podbox/java8
+FROM itherz/java8
 
 # --------------------------------------------------------------------- tcnative
 ENV APR_VERSION 1.5.2
-ENV TCNATIVE_VERSION 1.2.0
+ENV TCNATIVE_VERSION 1.1.34
 
 RUN apt-get update && apt-get install -yq gcc make libssl-dev libpcre++-dev zlib1g-dev \
 
@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -yq gcc make libssl-dev libpcre++-dev zlib
  && rm -fR /tmp/* /apr-* /tomcat-native-*
 
 # ---------------------------------------------------------------------- tomcat8
-ENV TOMCAT_VERSION 8.0.28
+ENV TOMCAT_VERSION 8.0.33
 
 RUN (curl -L http://www.us.apache.org/dist/tomcat/tomcat-8/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz | gunzip -c | tar x) \
  && mv apache-tomcat-$TOMCAT_VERSION /apache-tomcat \
