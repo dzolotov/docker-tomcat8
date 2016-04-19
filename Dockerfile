@@ -31,8 +31,8 @@ RUN cd /apache-tomcat/conf \
  && echo '\njava.awt.headless=true' >> catalina.properties
 
 RUN cd /apache-tomcat/lib \
- && curl -LO https://jcenter.bintray.com/org/apache/openejb/tomee-loader/1.7.2/tomee-loader-1.7.2.jar \
- && curl -LO https://jcenter.bintray.com/org/glassfish/main/external/jmxremote_optional-repackaged/4.1/jmxremote_optional-repackaged-4.1.jar
+ && curl -kLO https://jcenter.bintray.com/org/apache/openejb/tomee-loader/1.7.2/tomee-loader-1.7.2.jar \
+ && curl -kLO https://jcenter.bintray.com/org/glassfish/main/external/jmxremote_optional-repackaged/4.1/jmxremote_optional-repackaged-4.1.jar
 
 ADD server.xml /apache-tomcat/conf/
 ADD context.xml /apache-tomcat/conf/
